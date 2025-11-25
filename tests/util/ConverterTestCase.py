@@ -23,9 +23,23 @@ class ConverterTestCase(usdex.test.TestCase):
         omni.asset_validator.IssuePredicates.ContainsMessage("ArticulationRootAPI definition on a kinematic rigid body is not allowed"),
     ]
 
-    def assert_rotation_almost_equal(self, rot1: Gf.Rotation, rot2: Gf.Rotation, tolerance: float = 1e-6):
-        self.assertTrue(Gf.IsClose(rot1.GetAxis(), rot2.GetAxis(), tolerance), f"Axis mismatch: {rot1.GetAxis()} != {rot2.GetAxis()}")
-        self.assertTrue(Gf.IsClose(rot1.GetAngle(), rot2.GetAngle(), tolerance), f"Angle mismatch: {rot1.GetAngle()} != {rot2.GetAngle()}")
+    def assert_rotation_almost_equal(
+        self,
+        rot1: Gf.Rotation | Gf.Quatf | Gf.Quatd,
+        rot2: Gf.Rotation | Gf.Quatf | Gf.Quatd,
+        tolerance: float = 1e-6,
+    ):
+        if isinstance(rot1, Gf.Rotation) and isinstance(rot2, Gf.Rotation):
+            self.assertTrue(Gf.IsClose(rot1.GetAxis(), rot2.GetAxis(), tolerance), f"Axis mismatch: {rot1.GetAxis()} != {rot2.GetAxis()}")
+            self.assertTrue(Gf.IsClose(rot1.GetAngle(), rot2.GetAngle(), tolerance), f"Angle mismatch: {rot1.GetAngle()} != {rot2.GetAngle()}")
+        elif isinstance(rot1, (Gf.Quatf | Gf.Quatd)) and isinstance(rot2, (Gf.Quatf | Gf.Quatd)):
+            self.assertTrue(Gf.IsClose(rot1.GetReal(), rot2.GetReal(), tolerance), f"Real part mismatch: {rot1.GetReal()} != {rot2.GetReal()}")
+            self.assertTrue(
+                Gf.IsClose(rot1.GetImaginary(), rot2.GetImaginary(), tolerance),
+                f"Imaginary part mismatch: {rot1.GetImaginary()} != {rot2.GetImaginary()}",
+            )
+        else:
+            raise self.failureException(f"Rotation types do not match or are unsupported: {type(rot1)} vs {type(rot2)}")
 
     def setUp(self):
         super().setUp()
