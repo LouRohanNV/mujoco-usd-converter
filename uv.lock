@@ -348,7 +348,7 @@ requires-dist = [
     { name = "newton-usd-schemas", specifier = ">=0.4.0" },
     { name = "numpy-stl", specifier = ">=3.2" },
     { name = "tinyobjloader", specifier = ">=2.0.0rc13" },
-    { name = "usd-exchange", specifier = ">=2.2.2" },
+    { name = "usd-exchange", specifier = ">=2.2.2,<3" },
 ]
 
 [package.metadata.requires-dev]
@@ -360,7 +360,7 @@ dev = [
     { name = "requests", specifier = ">=2.32.3" },
     { name = "ruff", specifier = ">=0.11" },
     { name = "unittest-xml-reporting", specifier = ">=3.2.0" },
-    { name = "usd-exchange", extras = ["test"] },
+    { name = "usd-exchange", extras = ["test"], specifier = "<3" },
 ]
 
 [[package]]
